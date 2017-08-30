@@ -129,7 +129,7 @@ func CacheLatest(manifest *ImageManifest, sols int) (bool, error) {
 					imageCache.Images = append(imageCache.Images, marsImage)
 				}
 			}
-			log.Printf("Found %d/%d images for sol %d", solImages, len(catalog.Images), catalog.Sol)
+			log.Printf("Found %d/%d full size images for sol %d", solImages, len(catalog.Images), catalog.Sol)
 		}
 	}
 	return true, nil
