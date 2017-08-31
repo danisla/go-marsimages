@@ -39,20 +39,22 @@ type SolImage struct {
 	LMST       string `json:"lmst"`
 	UTC        string `json:"utc"`
 	SampleType string `json:"sampleType"`
+	ItemName   string `json:"itemName"`
 }
 
 // ListOfImages data structure for MarsImage lists
 type ListOfImages struct {
-	Images []MarsImage
+	Images []MarsImage `json:"images"`
 }
 
 // MarsImage data structure, normalized with custom meta.
 type MarsImage struct {
-	URL        string
-	Instrument string
-	Sol        int64
-	LMST       string
-	UTC        string
+	ItemName   string `json:"itemName"`
+	URL        string `json:"url"`
+	Instrument string `json:"instrument"`
+	Sol        int64  `json:"sol"`
+	LMST       string `json:"lmst"`
+	UTC        string `json:"utc"`
 }
 
 var imageCache ListOfImages
@@ -125,7 +127,7 @@ func CacheLatest(manifest *ImageManifest, sols int) (bool, error) {
 				img := catalog.Images[j]
 				if img.SampleType != "thumbnail" {
 					solImages++
-					marsImage := MarsImage{URL: img.URL, Instrument: img.Instrument, LMST: img.LMST, UTC: img.UTC}
+					marsImage := MarsImage{ItemName: img.ItemName, URL: img.URL, Instrument: img.Instrument, LMST: img.LMST, UTC: img.UTC}
 					imageCache.Images = append(imageCache.Images, marsImage)
 				}
 			}
