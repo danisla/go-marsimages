@@ -60,15 +60,13 @@ type MarsImage struct {
 var imageCache ListOfImages
 
 // FetchManifest downloads the manifest at the given baseURL
-func FetchManifest(baseURL string) (ImageManifest, error) {
+func FetchManifest(baseURL string, client *http.Client) (ImageManifest, error) {
 	var manifest ImageManifest
 
 	req, err := http.NewRequest("GET", baseURL, nil)
 	if err != nil {
 		return manifest, errors.New(500, fmt.Sprintf("Error building http request: %s", err))
 	}
-
-	client := &http.Client{}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -86,7 +84,7 @@ func FetchManifest(baseURL string) (ImageManifest, error) {
 }
 
 // FetchCatalog downloads the image catalog at hte given catalogURL
-func FetchCatalog(catalogURL string) (SolCatalog, error) {
+func FetchCatalog(catalogURL string, client *http.Client) (SolCatalog, error) {
 
 	var catalog SolCatalog
 
@@ -94,8 +92,6 @@ func FetchCatalog(catalogURL string) (SolCatalog, error) {
 	if err != nil {
 		return catalog, errors.New(500, fmt.Sprintf("Error building http request: %s", err))
 	}
-
-	client := &http.Client{}
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -113,13 +109,13 @@ func FetchCatalog(catalogURL string) (SolCatalog, error) {
 }
 
 // CacheLatest caches the given manifest and number of sols in memory
-func CacheLatest(manifest *ImageManifest, sols int) (bool, error) {
+func CacheLatest(manifest *ImageManifest, sols int, client *http.Client) (bool, error) {
 	total := len(manifest.Sols)
 
 	for i := total - sols; i < total; i++ {
 		solImages := 0
 		url := manifest.Sols[i].CatalogURL
-		catalog, err := FetchCatalog(url)
+		catalog, err := FetchCatalog(url, client)
 		if err != nil {
 			log.Printf("Error fetching url: %s: %s\n", url, err)
 		} else {
